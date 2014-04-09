@@ -4,10 +4,12 @@ require_once(dirname(dirname(__FILE__)).'/GHC/Base.php');
 
 class Either implements Functor, Monad {
     public function fmap(callable $f) {
+        $args = func_get_args();
+        $f = array_shift($args);
         if ($this instanceof Left) {
             return $this;
         } else if ($this instanceof Right) {
-            return Right(call_user_func($f, $this->value()));
+            return Right(call_user_func_array($f, array_merge($args, [$this->value()])));
         }
     }
     
