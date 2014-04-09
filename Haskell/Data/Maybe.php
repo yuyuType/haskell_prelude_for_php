@@ -4,10 +4,12 @@ require_once(dirname(dirname(__FILE__)).'/GHC/Base.php');
 
 class Maybe implements Functor, Monad, MonadPlus {
     public function fmap(callable $f) {
+        $args = func_get_args();
+        $f = array_shift($args);
         if ($this instanceof Nothing) {
             return $this;
         } else if ($this instanceof Just) {
-            return Just(call_user_func($f, $this->value()));
+            return Just(call_user_func_array($f, array_merge($args, [$this->value()])));
         }
     }
     
